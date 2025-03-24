@@ -8,8 +8,7 @@ OBJDIR = ../objects
 SRCS	=	philo.c \
 			utils.c \
 			main.c \
-			utils2.c \
-			utils3.c \
+			checker.c \
 
 OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 

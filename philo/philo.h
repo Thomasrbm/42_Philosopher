@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 07:27:14 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/21 12:44:01 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/24 02:04:12 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,18 @@
 #include <unistd.h>
 
 #define BOLD "\e[1m"
-#define RESET_PRECEDENT_STYLE "\e[0m"
-#define EAT "\e[38;2;5;165;135m\t🍔 is eating "
-#define THINK "\e[38;2;240;200;50m\t🧠 is thinking  "
-#define SLEEP "\e[38;2;70;160;240m\t😴 is sleeping  "
-#define FORK "\e[38;2;190;190;190m\t🍴 has taken a fork"
-#define DIE "\e[38;2;255;0;0;1m\t❌ died\n"
+#define RESET_PRECEDENT_STYLE "\e[0;39m"
+#define EAT "\e[38;2;5;165;135m\t🍔 is eating \e[0m"
+#define THINK "\e[38;2;240;200;50m\t🧠 is thinking  \e[0m"
+#define SLEEP "\e[38;2;70;160;240m\t😴 is sleeping  \e[0m"
+#define FORK "\e[38;2;190;190;190m\t🍴 has taken a fork\e[0m"
+#define DIE "\e[38;2;255;0;0;1m\t❌ died\e[0m"
 #define ERROR "One argument is wrong : only positive int and 200 philo max.\n"
 
 typedef struct s_philosopher
 {
 	int				philo_id_number;
-	int				nb_meal_eaten;
+	int				nbmeal_eaten;
 	int				left_fork_id;
 	int				right_fork_id;
 	long long		time_of_last_meal;

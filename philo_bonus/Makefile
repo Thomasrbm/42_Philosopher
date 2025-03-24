@@ -1,13 +1,14 @@
-NAME = philo
+NAME = philo_bonus
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -g3
 
 OBJDIR = ../objects
 
-SRCS	=	philo.c \
-			utils.c \
-			main.c
+SRCS	=	philo_bonus.c \
+			utils_bonus.c \
+			utils_bonus2.c \
+			main_bonus.c \
 
 OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 

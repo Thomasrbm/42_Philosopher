@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 12:19:05 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/21 12:43:25 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/24 03:12:35 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,11 @@ void	philo_eats(t_philosopher *curr_philo)
 		return ;
 	}
 	take_forks(curr_philo);
+	pthread_mutex_lock(&curr_philo->rules->last_meal_checker);
+	curr_philo->time_of_last_meal = current_time();
+	curr_philo->nbmeal_eaten++;
+	pthread_mutex_unlock(&curr_philo->rules->last_meal_checker);
 	print_status(curr_philo->rules, curr_philo->philo_id_number, EAT);
-	update_meal_info(curr_philo);
 	better_usleep(curr_philo->rules->time_eat, curr_philo->rules);
 	pthread_mutex_unlock(&curr_philo->rules->forks[curr_philo->left_fork_id]);
 	pthread_mutex_unlock(&curr_philo->rules->forks[curr_philo->right_fork_id]);
@@ -43,7 +46,6 @@ int	check_death_or_full(t_philosopher *philo)
 {
 	int				died;
 	int				all_ate;
-	int				meals;
 	t_simulation	*rules;
 
 	rules = philo->rules;
@@ -51,17 +53,7 @@ int	check_death_or_full(t_philosopher *philo)
 	died = rules->died;
 	all_ate = rules->all_ate;
 	pthread_mutex_unlock(&rules->death_mutex);
-	if (died || all_ate)
-		return (1);
-	if (rules->nb_to_eat_max != -1)
-	{
-		pthread_mutex_lock(&rules->last_meal_checker);
-		meals = philo->nb_meal_eaten;
-		pthread_mutex_unlock(&rules->last_meal_checker);
-		if (meals >= rules->nb_to_eat_max)
-			return (1);
-	}
-	return (0);
+	return (died || all_ate);
 }
 
 void	*philo_routine(void *void_philosopher)
