@@ -1,14 +1,13 @@
-NAME = philo_bonus
+NAME = philo
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g3
 
 OBJDIR = ../objects
 
-SRCS	=	philo_bonus.c \
-			utils_bonus.c \
-			utils_bonus2.c \
-			main_bonus.c \
+SRCS	=	philo.c \
+			utils.c \
+			verif.c
 
 OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 
@@ -25,13 +24,22 @@ $(OBJDIR)/%.o: %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@$(RM) $(OBJS)
-	@rmdir $(OBJDIR) 2>/dev/null || true
-	@echo "Cleaned all object files."
+	@if [ -d "$(OBJDIR)" ]; then \
+		echo "\033[33mCleaning object files...\033[0m"; \
+		$(RM) -r $(OBJDIR); \
+		echo "\033[32mClean completed successfully!\033[0m"; \
+	else \
+		echo "\033[33mNo objects to clean.\033[0m"; \
+	fi
 
 fclean: clean
-	@$(RM) $(NAME)
-	@echo "Cleaned $(NAME) and all objects."
+	@if [ -f "$(NAME)" ]; then \
+		echo "\033[33mRemoving $(NAME)...\033[0m"; \
+		$(RM) $(NAME); \
+		echo "\033[32mFull clean completed successfully!\033[0m"; \
+	else \
+		echo "\033[33mNo executable to clean.\033[0m"; \
+	fi
 
 re: fclean all
 
