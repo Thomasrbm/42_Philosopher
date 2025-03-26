@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 23:24:00 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/25 23:30:56 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/26 00:47:00 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,13 @@ void	*monitor_death(void *arg)
 	sim = (t_simulation *)arg;
 	while (1)
 	{
+		sem_wait(sim->finished_sem);
+		if (sim->finished)
+		{
+			sem_post(sim->finished_sem);
+			break ;
+		}
+		sem_post(sim->finished_sem);
 		current_time = get_time();
 		sem_wait(sim->local_meal_sem);
 		last_meal = sim->last_meal;
@@ -70,4 +77,24 @@ void	*monitor_death(void *arg)
 		usleep(500);
 	}
 	return (NULL);
+}
+
+int	is_valid_arg(char **argv)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	while (argv[i])
+	{
+		j = 0;
+		while (argv[i][j])
+		{
+			if (!(argv[i][j] >= '0' && argv[i][j] <= '9'))
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
 }

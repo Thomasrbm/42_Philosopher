@@ -6,31 +6,11 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 10:29:04 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/24 06:51:15 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/26 00:46:50 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
-
-int	is_valid_arg(char **argv)
-{
-	int	i;
-	int	j;
-
-	i = 1;
-	while (argv[i])
-	{
-		j = 0;
-		while (argv[i][j])
-		{
-			if (!(argv[i][j] >= '0' && argv[i][j] <= '9'))
-				return (0);
-			j++;
-		}
-		i++;
-	}
-	return (1);
-}
 
 int	init_rules(t_simulation *sim, char **argv)
 {
@@ -93,28 +73,41 @@ int	init_simulation(t_simulation *sim, char **argv)
 	return (1);
 }
 
+int	init_philo(t_simulation *sim, int id, pid_t pid)
+{
+	pid = fork();
+	if (pid < 0)
+		return (1);
+	if (pid == 0)
+	{
+		if (sim->nb_philo % 2 == 0)
+		{
+			if (id % 2 == 0)
+				usleep(15000);
+		}
+		philo_life(id, sim);
+		exit(0);
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_simulation	sim;
-	int				i;
+	int				id;
 	pid_t			pid;
 
+	pid = 0;
 	if (argc != 5 && argc != 6)
 		return (write(2, "Error: Wrong arg count\n", 24));
 	if (!init_simulation(&sim, argv))
 		return (1);
-	i = 0;
-	while (i < sim.nb_philo)
+	id = 0;
+	while (id < sim.nb_philo)
 	{
-		pid = fork();
-		if (pid < 0)
+		if (init_philo(&sim, id, pid))
 			return (write(2, "Error: Fork failed\n", 19));
-		if (pid == 0)
-		{
-			philo_life(i, &sim);
-			exit(0);
-		}
-		sim.pids[i++] = pid;
+		sim.pids[id++] = pid;
 	}
 	wait_philos(&sim);
 	free(sim.pids);

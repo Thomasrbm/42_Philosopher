@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 12:21:13 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/25 22:22:01 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/26 01:16:45 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	print_status(t_simulation *rules, int id, char *string)
 {
 	pthread_mutex_lock(&(rules->printing));
+	pthread_mutex_lock(&(rules->died_mutex));
 	if (!(rules->died))
 	{
 		printf(BOLD "%5lli " RESET, current_time() - rules->first_current_time);
@@ -22,6 +23,7 @@ void	print_status(t_simulation *rules, int id, char *string)
 		printf("%s" RESET "\n", string);
 	}
 	pthread_mutex_unlock(&(rules->printing));
+	pthread_mutex_unlock(&(rules->died_mutex));
 	return ;
 }
 
@@ -89,7 +91,7 @@ void	*philo_routine(void *void_philosopher)
 	philo = (t_philosopher *)void_philosopher;
 	rules = philo->rules;
 	if (philo->philo_id % 2)
-		usleep(500);
+		usleep(15000);
 	while (1)
 	{
 		if (check_simulation_end(rules))

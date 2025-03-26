@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 07:27:14 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/25 22:40:29 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/26 01:33:20 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct s_rules
 	pthread_mutex_t	meal_check;
 	pthread_mutex_t	forks[200];
 	pthread_mutex_t	printing;
+	pthread_mutex_t	died_mutex;
 	t_philosopher	philosophers[200];
 }					t_simulation;
 
@@ -73,3 +74,4 @@ int					is_valid_arg(char **argv);
 int					launch_philosophers(t_simulation *rules, int i);
 void				death_checker(t_simulation *r, int *i, t_philosopher *p);
 void				*monitor_death(void *arg);
+void				single_philo(t_simulation *r, t_philosopher *p);

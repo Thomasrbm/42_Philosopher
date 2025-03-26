@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 12:19:05 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/25 22:21:58 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/26 01:32:43 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,7 @@ void	philo_eats(t_philosopher *p)
 	r = p->rules;
 	if (r->nb_philo == 1)
 	{
-		pthread_mutex_lock(&r->forks[0]);
-		print_status(r, p->philo_id, FORK);
-		while (!r->died)
-			usleep(500);
-		pthread_mutex_unlock(&r->forks[0]);
+		single_philo(r, p);
 		return ;
 	}
 	pthread_mutex_lock(&r->forks[p->left_fork_id]);
@@ -87,7 +83,8 @@ int	init_simulation(t_simulation *r, char **argv)
 		|| r->time_sleep == -2 || r->nb_eat == -2)
 		return (0);
 	if (pthread_mutex_init(&r->printing, NULL)
-		|| pthread_mutex_init(&r->meal_check, NULL))
+		|| pthread_mutex_init(&r->meal_check, NULL)
+		|| pthread_mutex_init(&r->died_mutex, NULL))
 		return (0);
 	return (1);
 }

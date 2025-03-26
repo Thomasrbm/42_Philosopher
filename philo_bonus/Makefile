@@ -1,7 +1,7 @@
 NAME = philo_bonus
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 
+CFLAGS = -Wall -Wextra -Werror -g3
 
 OBJDIR = ../objects
 

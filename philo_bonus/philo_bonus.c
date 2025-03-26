@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 23:10:48 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/25 22:28:53 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/26 00:29:09 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,37 +54,18 @@ void	philo_eat(t_simulation *sim, int id)
 	philo_sleep_think(sim, id);
 }
 
-static void	take_even_forks(int id, t_simulation *sim)
+static void	take_forks(int id, t_simulation *sim)
 {
-	sem_wait(sim->forks);
 	sem_wait(sim->forks);
 	sem_wait(sim->write_sem);
 	printf(BOLD "%5ld %3d %s\n" RESET, get_time() - sim->start_time, id + 1,
 		FORK);
+	sem_post(sim->write_sem);
+	sem_wait(sim->forks);
+	sem_wait(sim->write_sem);
 	printf(BOLD "%5ld %3d %s\n" RESET, get_time() - sim->start_time, id + 1,
 		FORK);
 	sem_post(sim->write_sem);
-}
-
-static void	take_forks(int id, t_simulation *sim)
-{
-	if (sim->nb_philo % 2 == 1)
-	{
-		if (id % 2 == 0)
-			usleep(500);
-		sem_wait(sim->forks);
-		sem_wait(sim->write_sem);
-		printf(BOLD "%5ld %3d %s\n" RESET, get_time() - sim->start_time, id + 1,
-			FORK);
-		sem_post(sim->write_sem);
-		sem_wait(sim->forks);
-		sem_wait(sim->write_sem);
-		printf(BOLD "%5ld %3d %s\n" RESET, get_time() - sim->start_time, id + 1,
-			FORK);
-		sem_post(sim->write_sem);
-	}
-	else
-		take_even_forks(id, sim);
 }
 
 void	philo_life(int id, t_simulation *sim)
