@@ -1,9 +1,0 @@
-{
-	"files.associations": {
-		"locale": "c",
-		"functional": "c",
-		"type_traits": "c",
-		"ratio": "c",
-		"philo_bonus.h": "c"
-	}
-}

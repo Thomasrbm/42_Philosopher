@@ -6,11 +6,23 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 05:12:43 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/28 04:35:21 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/29 00:37:13 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+int	skip_zero(const char *str)
+{
+	int	len;
+
+	while (*str == '0')
+		str++;
+	len = 0;
+	while (str[len])
+		len++;
+	return (len);
+}
 
 long	get_time(void)
 {
@@ -29,12 +41,16 @@ int	is_valid_arg(char **argv)
 	while (argv[i])
 	{
 		j = 0;
+		if (argv[i][j] == '+')
+			j++;
 		while (argv[i][j])
 		{
 			if (!(argv[i][j] >= '0' && argv[i][j] <= '9'))
 				return (0);
 			j++;
 		}
+		if (skip_zero(argv[i]) > 10)
+			return (0);
 		i++;
 	}
 	return (1);

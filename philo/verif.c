@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 11:07:44 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/27 00:57:45 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/29 00:35:39 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ int	is_valid_arg(char **argv)
 	while (argv[i])
 	{
 		j = 0;
+		if (argv[i][j] == '+')
+			j++;
 		while (argv[i][j])
 		{
 			if (!ft_isdigit(argv[i][j]))
