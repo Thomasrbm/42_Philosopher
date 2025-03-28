@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 10:29:04 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/28 06:33:55 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/28 06:40:25 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	main(int argc, char **argv)
 		if (r.pids[id] == 0)
 		{
 			if (id % 2 == 0)
-				usleep(500);
+				usleep(1500);
 			philo_life(id, &r);
 			exit(0);
 		}
