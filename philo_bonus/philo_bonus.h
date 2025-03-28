@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 07:27:14 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/25 22:31:30 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/28 01:39:09 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -34,6 +35,8 @@
 
 typedef struct s_simulation
 {
+	long 	time_of_death;
+	int		id_dead;
 	int		nb_philo;
 	long	time_die;
 	long	time_eat;
@@ -51,17 +54,27 @@ typedef struct s_simulation
 	long	last_meal;
 	int		philo_id;
 	int		finished;
-	int		died;
+	sem_t	*any_death_sem;
+	int		exit_status;
 }			t_simulation;
 
-int			init_rules(t_simulation *sim, char **argv);
+int			init_rules(t_simulation *r, char **argv);
 long		ft_atol(const char *str);
 long		get_time(void);
 int			is_valid_arg(char **argv);
-void		philo_life(int id, t_simulation *sim);
-void		wait_philos(t_simulation *sim);
-void		precise_sleep(long milliseconds);
-void		single_life(int id, t_simulation *sim);
-void		kill_remaining(t_simulation *sim, pid_t pid);
-void		check_if_dead(t_simulation *sim, long current_time, long last);
+void		philo_life(int id, t_simulation *r);
+void		wait_philos(t_simulation *r);
+void		precise_sleep(long milliseconds, t_simulation *r);
+void		single_life(int id, t_simulation *r);
+void		kill_remaining(t_simulation *r, pid_t pid);
+int			check_if_dead(t_simulation *r, long current_time, long last);
 void		*monitor_death(void *arg);
+void		exit_child(t_simulation *r, int status);
+char		*ft_strjoin(char *s1, char *s2);
+char		*ft_itoa(int n);
+long		get_time(void);
+int			sim_stopped(t_simulation *r);
+void		init_local_meal_sem(t_simulation *r, int id);
+void	safe_print(long timestamp, char *msg,  int id, t_simulation *r);
+void		safe_death(long current_time, int id, t_simulation *r);
+void		safe_sleep_print(t_simulation *r, int id, char *msg, long duration);

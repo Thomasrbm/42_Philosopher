@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 21:45:43 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/26 01:32:51 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/27 00:59:08 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	check_if_philo_died(t_simulation *r, int *i, t_philosopher *p)
 	}
 }
 
-void	death_checker(t_simulation *r, int *i, t_philosopher *p)
+void	death__meal_checker(t_simulation *r, int *i, t_philosopher *p)
 {
 	while (!r->died && !r->all_ate)
 	{

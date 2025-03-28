@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 12:21:13 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/26 01:16:45 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/27 08:51:38 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	better_sleep(long long time, t_simulation *rules)
 			break ;
 		if (current_time() - start >= time)
 			break ;
-		usleep(500);
+		usleep(1);
 	}
 }
 

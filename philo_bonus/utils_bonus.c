@@ -1,103 +1,106 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_bonus.c                                    :+:      :+:    :+:   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/23 10:46:29 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/23 12:40:00 by throbert         ###   ########.fr       */
+/*   Created: 2025/03/27 05:12:43 by throbert          #+#    #+#             */
+/*   Updated: 2025/03/27 12:11:53 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-long	ft_atol(const char *str)
+static int	get_len(int n)
 {
-	long	result;
-	int		sign;
+	long	num;
+	int		len;
 
-	result = 0;
-	sign = 1;
-	while (*str == ' ' || (*str >= 9 && *str <= 13))
-		str++;
-	if (*str == '-' || *str == '+')
+	num = n;
+	len = 0;
+	if (num <= 0)
 	{
-		if (*str == '-')
-			sign = -1;
-		str++;
+		len++;
+		num = -num;
 	}
-	while (*str >= '0' && *str <= '9')
+	while (num)
 	{
-		result = result * 10 + (*str - '0');
-		if (result * sign > INT_MAX)
-			return (-1);
-		if (result * sign < INT_MIN)
-			return (-1);
-		str++;
+		num /= 10;
+		len++;
 	}
-	return (result * sign);
+	return (len);
 }
 
-void	precise_sleep(long milliseconds)
+char	*ft_itoa(int n)
 {
-	long	start;
+	long	num;
+	int		len;
+	char	*str;
 
-	start = get_time();
-	while (get_time() - start < milliseconds)
-		usleep(500);
+	len = get_len(n);
+	str = malloc(sizeof(char) * (len + 1));
+	if (!str)
+		return (NULL);
+	str[len] = '\0';
+	num = n;
+	if (num < 0)
+		num = -num;
+	if (n == 0)
+		str[0] = '0';
+	while (num)
+	{
+		str[--len] = (num % 10) + '0';
+		num /= 10;
+	}
+	if (n < 0)
+		str[0] = '-';
+	return (str);
 }
 
-void	kill_remaining(t_simulation *sim, pid_t pid)
+static int	ft_strlen(char *s)
 {
 	int	i;
 
 	i = 0;
-	while (i < sim->nb_philo)
+	while (s[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	int		i;
+	int		j;
+	int		len1;
+	int		len2;
+	char	*res;
+
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	res = malloc(len1 + len2 + 1);
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (i < len1)
 	{
-		if (sim->pids[i] != pid && sim->pids[i] > 0)
-		{
-			kill(sim->pids[i], SIGKILL);
-			waitpid(sim->pids[i], NULL, 0);
-		}
+		res[i] = s1[i];
 		i++;
 	}
-}
-
-void	cleanup_semaphores(t_simulation *sim)
-{
-	sem_close(sim->forks);
-	sem_close(sim->write_sem);
-	sem_close(sim->meal_sem);
-	sem_close(sim->death_sem);
-	sem_close(sim->finished_sem);
-	sem_unlink("forks");
-	sem_unlink("write");
-	sem_unlink("meal_sem");
-	sem_unlink("death_sem");
-	sem_unlink("finished_sem");
-}
-
-void	wait_philos(t_simulation *sim)
-{
-	int		status;
-	pid_t	pid;
-	int		died;
-
-	died = 0;
-	while (!died)
+	j = 0;
+	while (j < len2)
 	{
-		pid = waitpid(-1, &status, 0);
-		if (pid == -1)
-			break ;
-		if (WIFEXITED(status))
-		{
-			if (WEXITSTATUS(status) == 1)
-			{
-				kill_remaining(sim, pid);
-				died = 1;
-			}
-		}
+		res[i + j] = s2[j];
+		j++;
 	}
-	cleanup_semaphores(sim);
+	res[i + j] = '\0';
+	return (res);
+}
+
+long	get_time(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }

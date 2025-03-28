@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 07:27:14 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/26 01:33:20 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/27 00:59:29 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void				*philo_routine(void *void_philosopher);
 int					ft_isdigit(char c);
 int					is_valid_arg(char **argv);
 int					launch_philosophers(t_simulation *rules, int i);
-void				death_checker(t_simulation *r, int *i, t_philosopher *p);
+void				death__meal_checker(t_simulation *r, int *i,
+						t_philosopher *p);
 void				*monitor_death(void *arg);
 void				single_philo(t_simulation *r, t_philosopher *p);

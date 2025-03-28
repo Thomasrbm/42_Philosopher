@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 11:07:44 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/14 11:32:34 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/27 00:57:45 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_isdigit(char c)
 	return (c >= '0' && c <= '9');
 }
 
-int	get_length_without_leading_zeros(const char *str)
+int	skip_zero(const char *str)
 {
 	int	len;
 
@@ -33,10 +33,8 @@ int	is_valid_arg(char **argv)
 {
 	int	i;
 	int	j;
-	int	check;
 
 	i = 1;
-	check = 0;
 	while (argv[i])
 	{
 		j = 0;
@@ -46,7 +44,7 @@ int	is_valid_arg(char **argv)
 				return (0);
 			j++;
 		}
-		if (get_length_without_leading_zeros(argv[i]) > 10)
+		if (skip_zero(argv[i]) > 10)
 			return (0);
 		i++;
 	}

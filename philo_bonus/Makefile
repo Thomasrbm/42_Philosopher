@@ -5,10 +5,13 @@ CFLAGS = -Wall -Wextra -Werror -g3
 
 OBJDIR = ../objects
 
-SRCS	=	philo_bonus.c \
+SRCS	=	philo_life_bonus.c \
 			utils_bonus.c \
-			utils_bonus2.c \
+			utils2_bonus.c \
+			death_checker.c \
 			main_bonus.c \
+			wait_kill_bonus.c \
+			safe_sem.c
 
 OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 

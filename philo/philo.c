@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 12:19:05 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/26 01:32:43 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/27 04:20:37 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	start_simulation(t_simulation *rules)
 	i = 0;
 	if (launch_philosophers(rules, i))
 		return (1);
-	death_checker(rules, &i, rules->philosophers);
+	death__meal_checker(rules, &i, rules->philosophers);
 	i = 0;
 	while (i < rules->nb_philo)
 	{
@@ -91,25 +91,27 @@ int	init_simulation(t_simulation *r, char **argv)
 
 static void	init_philosophers(t_simulation *rules)
 {
-	int	i;
+	int	id;
 	int	left;
 	int	right;
 	int	temp;
 
-	i = 0;
-	while (i < rules->nb_philo)
+	id = 0;
+	while (id < rules->nb_philo)
 	{
-		left = i;
-		right = (i + 1) % rules->nb_philo;
+		left = id;
+		right = (id + 1) % rules->nb_philo;
 		if (left > right)
 		{
 			temp = left;
 			left = right;
 			right = temp;
 		}
-		rules->philosophers[i] = (t_philosopher){i, 0, left, right, 0, rules,
+		rules->philosophers[id] = (t_philosopher){id, 0, left, right, 0, rules,
 			(pthread_t){0}};
-		i++;
+		if (pthread_mutex_init(&rules->forks[id], NULL))
+			return ;
+		id++;
 	}
 }
 
@@ -128,7 +130,3 @@ int	main(int argc, char **argv)
 		return (write(2, "Error: Thread creation failed\n", 31));
 	return (0);
 }
-
-// Simplifier les fonction
-
-// rename rules.philosophers  em philo_id
