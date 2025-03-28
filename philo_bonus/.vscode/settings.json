@@ -3,6 +3,7 @@
 		"locale": "c",
 		"functional": "c",
 		"type_traits": "c",
-		"ratio": "c"
+		"ratio": "c",
+		"philo_bonus.h": "c"
 	}
 }

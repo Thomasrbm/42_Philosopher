@@ -7,7 +7,6 @@ OBJDIR = ../objects
 
 SRCS	=	philo_life_bonus.c \
 			utils_bonus.c \
-			utils2_bonus.c \
 			death_checker.c \
 			main_bonus.c \
 			wait_kill_bonus.c \

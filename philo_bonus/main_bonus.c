@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 10:29:04 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/28 01:25:58 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/28 06:33:55 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ int	init_rules(t_simulation *r, char **argv)
 	r->time_eat = ft_atol(argv[3]);
 	r->time_sleep = ft_atol(argv[4]);
 	if (argv[5])
-		r->nb_eat = ft_atol(argv[5]);
+		r->nb_to_eat = ft_atol(argv[5]);
 	else
-		r->nb_eat = -1;
+		r->nb_to_eat = -1;
 	r->eaten = 0;
-	r->finished = 0;
+	r->exit_status = 0;
 	if (r->nb_philo <= 0 || r->nb_philo > 200 || r->time_die <= 0
 		|| r->time_eat <= 0 || r->time_sleep <= 0 || (argv[5]
-			&& r->nb_eat <= 0))
+			&& r->nb_to_eat <= 0))
 		return (0);
 	return (1);
 }
@@ -35,20 +35,14 @@ static int	init_semaphores(t_simulation *r)
 {
 	sem_unlink("forks");
 	sem_unlink("write");
-	sem_unlink("meal_sem");
-	sem_unlink("death_sem");
-	sem_unlink("finished_sem");
-	sem_unlink("finish_sem");
-	sem_unlink("any_death_sem");
-	r->any_death_sem = sem_open("any_death_sem", O_CREAT, 0644, 1);
+	sem_unlink("diverse_updt");
+	sem_unlink("dead");
+	r->dead = sem_open("dead", O_CREAT, 0644, 1);
 	r->forks = sem_open("forks", O_CREAT, 0644, r->nb_philo);
 	r->write_sem = sem_open("write", O_CREAT, 0644, 1);
-	r->meal_sem = sem_open("meal_sem", O_CREAT, 0644, 1);
-	r->death_sem = sem_open("death_sem", O_CREAT, 0644, 1);
-	r->finished_sem = sem_open("finished_sem", O_CREAT, 0644, 1);
+	r->diverse_updt = sem_open("diverse_updt", O_CREAT, 0644, 1);
 	if (r->forks == SEM_FAILED || r->write_sem == SEM_FAILED
-		|| r->meal_sem == SEM_FAILED || r->death_sem == SEM_FAILED
-		|| r->finished_sem == SEM_FAILED || r->any_death_sem == SEM_FAILED)
+		|| r->diverse_updt == SEM_FAILED || r->dead == SEM_FAILED)
 	{
 		return (0);
 	}
@@ -69,8 +63,6 @@ int	init_simulation(t_simulation *r, char **argv)
 	}
 	r->pids = malloc(sizeof(pid_t) * r->nb_philo);
 	memset(r->pids, 0, sizeof(pid_t) * r->nb_philo);
-	r->time_of_death = 0;
-	r->id_dead = 0;
 	if (!r->pids)
 	{
 		write(2, "Error: Malloc failed\n", 21);
@@ -98,7 +90,7 @@ int	main(int argc, char **argv)
 		if (r.pids[id] == 0)
 		{
 			if (id % 2 == 0)
-				usleep(15000);
+				usleep(500);
 			philo_life(id, &r);
 			exit(0);
 		}
