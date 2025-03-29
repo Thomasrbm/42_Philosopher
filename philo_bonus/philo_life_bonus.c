@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 23:10:48 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/28 06:39:31 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/29 00:48:54 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ void	philo_life(int id, t_simulation *r)
 		sem_post(r->diverse_updt);
 		take_forks(id, r);
 		philo_eat(r, id);
+		if (r->exit_status == 2)
+			break ;
 		philo_sleep_think(r, id);
 		usleep(50);
 	}

@@ -5,36 +5,52 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/31 12:19:05 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/27 04:20:37 by throbert         ###   ########.fr       */
+/*   Created: 2025/03/29 01:20:07 by throbert          #+#    #+#             */
+/*   Updated: 2025/03/29 01:23:00 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	start_simulation(t_simulation *rules)
+void	single_philo(t_simulation *r, t_philosopher *p)
 {
-	int	i;
+	if (r->nb_philo == 1)
+	{
+		pthread_mutex_lock(&r->forks[0]);
+		print_status(r, p->philo_id, FORK);
+		while (1)
+		{
+			pthread_mutex_lock(&r->died_mutex);
+			if (r->died)
+			{
+				pthread_mutex_unlock(&r->died_mutex);
+				break ;
+			}
+			pthread_mutex_unlock(&r->died_mutex);
+			usleep(500);
+		}
+		pthread_mutex_unlock(&r->forks[0]);
+		return ;
+	}
+}
 
-	rules->first_current_time = current_time();
-	i = 0;
-	if (launch_philosophers(rules, i))
-		return (1);
-	death__meal_checker(rules, &i, rules->philosophers);
-	i = 0;
-	while (i < rules->nb_philo)
+void	better_sleep(long long time, t_simulation *rules)
+{
+	long long	start;
+	int			died;
+
+	start = current_time();
+	while (1)
 	{
-		pthread_join(rules->philosophers[i].thread_id, NULL);
-		i++;
+		pthread_mutex_lock(&rules->meal_check);
+		died = rules->died;
+		pthread_mutex_unlock(&rules->meal_check);
+		if (died)
+			break ;
+		if (current_time() - start >= time)
+			break ;
+		usleep(1);
 	}
-	i = 0;
-	while (i < rules->nb_philo)
-	{
-		pthread_mutex_destroy(&rules->forks[i]);
-		i++;
-	}
-	pthread_mutex_destroy(&rules->printing);
-	return (0);
 }
 
 void	philo_eats(t_philosopher *p)
@@ -61,72 +77,27 @@ void	philo_eats(t_philosopher *p)
 	pthread_mutex_unlock(&r->forks[p->right_fork_id]);
 }
 
-int	init_simulation(t_simulation *r, char **argv)
+void	*philo_routine(void *void_philosopher)
 {
-	r->nb_philo = ft_atol(argv[1]);
-	if (r->nb_philo <= 0 || r->nb_philo > 200)
-		return (0);
-	r->time_death = ft_atol(argv[2]);
-	r->time_eat = ft_atol(argv[3]);
-	r->time_sleep = ft_atol(argv[4]);
-	r->died = 0;
-	r->all_ate = 0;
-	if (argv[5])
+	t_philosopher	*philo;
+	t_simulation	*rules;
+
+	philo = (t_philosopher *)void_philosopher;
+	rules = philo->rules;
+	if (philo->philo_id % 2)
+		usleep(15000);
+	while (1)
 	{
-		r->nb_eat = ft_atol(argv[5]);
-		if (r->nb_eat <= 0)
-			return (0);
+		if (check_simulation_end(rules))
+			break ;
+		philo_eats(philo);
+		if (check_simulation_end(rules))
+			break ;
+		print_status(rules, philo->philo_id, SLEEP);
+		better_sleep(rules->time_sleep, rules);
+		if (check_simulation_end(rules))
+			break ;
+		print_status(rules, philo->philo_id, THINK);
 	}
-	else
-		r->nb_eat = -1;
-	if (r->nb_philo == -2 || r->time_death == -2 || r->time_eat == -2
-		|| r->time_sleep == -2 || r->nb_eat == -2)
-		return (0);
-	if (pthread_mutex_init(&r->printing, NULL)
-		|| pthread_mutex_init(&r->meal_check, NULL)
-		|| pthread_mutex_init(&r->died_mutex, NULL))
-		return (0);
-	return (1);
-}
-
-static void	init_philosophers(t_simulation *rules)
-{
-	int	id;
-	int	left;
-	int	right;
-	int	temp;
-
-	id = 0;
-	while (id < rules->nb_philo)
-	{
-		left = id;
-		right = (id + 1) % rules->nb_philo;
-		if (left > right)
-		{
-			temp = left;
-			left = right;
-			right = temp;
-		}
-		rules->philosophers[id] = (t_philosopher){id, 0, left, right, 0, rules,
-			(pthread_t){0}};
-		if (pthread_mutex_init(&rules->forks[id], NULL))
-			return ;
-		id++;
-	}
-}
-
-int	main(int argc, char **argv)
-{
-	t_simulation	rules;
-
-	if (argc != 5 && argc != 6)
-		return (write(2, "Error: Wrong arg count\n", 24));
-	if (!is_valid_arg(argv) || !init_simulation(&rules, argv))
-		return (write(2,
-				"One argument is wrong : only positive int and 200 phil max.\n",
-				61));
-	init_philosophers(&rules);
-	if (start_simulation(&rules))
-		return (write(2, "Error: Thread creation failed\n", 31));
-	return (0);
+	return (NULL);
 }

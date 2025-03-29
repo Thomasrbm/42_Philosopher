@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 12:21:13 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/27 08:51:38 by throbert         ###   ########.fr       */
+/*   Updated: 2025/03/29 01:22:35 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,56 +52,10 @@ long	ft_atol(const char *str)
 	return (result * sign);
 }
 
-void	better_sleep(long long time, t_simulation *rules)
+long long	current_time(void)
 {
-	long long	start;
-	int			died;
+	struct timeval	t;
 
-	start = current_time();
-	while (1)
-	{
-		pthread_mutex_lock(&rules->meal_check);
-		died = rules->died;
-		pthread_mutex_unlock(&rules->meal_check);
-		if (died)
-			break ;
-		if (current_time() - start >= time)
-			break ;
-		usleep(1);
-	}
-}
-
-static int	check_simulation_end(t_simulation *rules)
-{
-	pthread_mutex_lock(&rules->meal_check);
-	if (rules->died || rules->all_ate)
-	{
-		pthread_mutex_unlock(&rules->meal_check);
-		return (1);
-	}
-	pthread_mutex_unlock(&rules->meal_check);
-	return (0);
-}
-
-void	*philo_routine(void *void_philosopher)
-{
-	t_philosopher	*philo;
-	t_simulation	*rules;
-
-	philo = (t_philosopher *)void_philosopher;
-	rules = philo->rules;
-	if (philo->philo_id % 2)
-		usleep(15000);
-	while (1)
-	{
-		if (check_simulation_end(rules))
-			break ;
-		philo_eats(philo);
-		if (check_simulation_end(rules))
-			break ;
-		print_status(rules, philo->philo_id, SLEEP);
-		better_sleep(rules->time_sleep, rules);
-		print_status(rules, philo->philo_id, THINK);
-	}
-	return (NULL);
+	gettimeofday(&t, NULL);
+	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
 }
