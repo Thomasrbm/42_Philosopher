@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 01:20:07 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/29 01:23:00 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:16:24 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,10 @@ void	*philo_routine(void *void_philosopher)
 		philo_eats(philo);
 		if (check_simulation_end(rules))
 			break ;
-		print_status(rules, philo->philo_id, SLEEP);
 		better_sleep(rules->time_sleep, rules);
+		if (check_simulation_end(rules))
+			break ;
+		print_status(rules, philo->philo_id, SLEEP);
 		if (check_simulation_end(rules))
 			break ;
 		print_status(rules, philo->philo_id, THINK);

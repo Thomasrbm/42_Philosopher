@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 21:45:43 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/29 01:22:56 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:21:32 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 
 int	check_simulation_end(t_simulation *rules)
 {
+	pthread_mutex_lock(&rules->died_mutex);
 	pthread_mutex_lock(&rules->finish_mutex);
 	if (rules->died || rules->all_ate)
 	{
+		pthread_mutex_unlock(&rules->died_mutex);
 		pthread_mutex_unlock(&rules->finish_mutex);
 		return (1);
 	}
+	pthread_mutex_unlock(&rules->died_mutex);
 	pthread_mutex_unlock(&rules->finish_mutex);
 	return (0);
 }
@@ -45,7 +48,7 @@ void	check_if_philo_died(t_simulation *r, int *i, t_philosopher *p)
 		}
 		pthread_mutex_unlock(&r->meal_check);
 		(*i)++;
-		usleep(500);
+		usleep(50);
 	}
 }
 
@@ -84,6 +87,6 @@ void	death__meal_checker(t_simulation *r, int *i, t_philosopher *p)
 			r->all_ate = 1;
 			pthread_mutex_unlock(&r->finish_mutex);
 		}
-		usleep(500);
+		usleep(50);
 	}
 }
