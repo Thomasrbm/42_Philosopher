@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 01:20:07 by throbert          #+#    #+#             */
-/*   Updated: 2025/04/01 01:16:24 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 10:42:36 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	better_sleep(long long time, t_simulation *rules)
 			break ;
 		if (current_time() - start >= time)
 			break ;
-		usleep(1);
+		usleep(500);
 	}
 }
 
@@ -85,7 +85,7 @@ void	*philo_routine(void *void_philosopher)
 	philo = (t_philosopher *)void_philosopher;
 	rules = philo->rules;
 	if (philo->philo_id % 2)
-		usleep(15000);
+		usleep(500);
 	while (1)
 	{
 		if (check_simulation_end(rules))

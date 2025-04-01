@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 10:46:29 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/28 06:34:23 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 05:52:58 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,12 @@ void	cleanup_semaphores(t_simulation *r)
 	sem_close(r->diverse_updt);
 }
 
+void	cleanup_and_free(t_simulation *r)
+{
+	cleanup_semaphores(r);
+	free(r->pids);
+}
+
 void	wait_philos(t_simulation *r)
 {
 	int		status;
@@ -44,24 +50,24 @@ void	wait_philos(t_simulation *r)
 	int		i;
 
 	i = 0;
-	status = 0;
-	while (1)
+	pid = waitpid(-1, &status, 0);
+	while (pid > 0)
 	{
-		pid = waitpid(-1, &status, 0);
-		if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
+		if (WIFEXITED(status))
 		{
-			kill_remaining(r, pid);
-			break ;
+			if (WEXITSTATUS(status) == 1)
+			{
+				kill_remaining(r, pid);
+				break ;
+			}
+			else if (WEXITSTATUS(status) == 2)
+			{
+				i++;
+				if (i == r->nb_philo)
+					break ;
+			}
 		}
-		else if (WIFEXITED(status) && WEXITSTATUS(status) == 2)
-			i++;
-		if (i == r->nb_philo)
-			break ;
+		pid = waitpid(-1, &status, 0);
 	}
-	i = r->nb_philo;
-	while (i-- > 0)
-		sem_post(r->forks);
-	sem_post(r->write_sem);
-	cleanup_semaphores(r);
-	free(r->pids);
+	cleanup_and_free(r);
 }

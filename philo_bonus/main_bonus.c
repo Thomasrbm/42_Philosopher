@@ -6,11 +6,22 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 10:29:04 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/28 06:40:25 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 06:04:14 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+void	init_philo_life(int id, t_simulation *r, pthread_t *death_thread)
+{
+	if (r->nb_philo == 1)
+		single_life(id, r);
+	r->philo_id = id;
+	sem_wait(r->diverse_updt);
+	r->last_meal = get_time();
+	sem_post(r->diverse_updt);
+	pthread_create(death_thread, NULL, monitor_death, r);
+}
 
 int	init_rules(t_simulation *r, char **argv)
 {
@@ -90,7 +101,7 @@ int	main(int argc, char **argv)
 		if (r.pids[id] == 0)
 		{
 			if (id % 2 == 0)
-				usleep(1500);
+				usleep(500);
 			philo_life(id, &r);
 			exit(0);
 		}

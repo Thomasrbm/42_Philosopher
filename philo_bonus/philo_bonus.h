@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 07:27:14 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/28 06:34:12 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 04:34:21 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,3 +68,4 @@ long		get_time(void);
 void		safe_print(long timestamp, char *msg, int id, t_simulation *r);
 void		safe_sleep_print(t_simulation *r, int id, char *msg, long duration);
 void		safe_print_dead(long timestamp, char *msg, int id, t_simulation *r);
+void		init_philo_life(int id, t_simulation *r, pthread_t *death_thread);

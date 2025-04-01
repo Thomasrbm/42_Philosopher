@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 23:24:00 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/28 06:32:11 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 06:07:33 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,18 +45,21 @@ int	check_if_dead(t_simulation *r, long current_time, long last)
 	return (0);
 }
 
-static int	check_death(t_simulation *r, long current_time)
+static int	check_death_condition(t_simulation *r, long current_time,
+		long last_meal)
 {
-	sem_wait(r->diverse_updt);
-	if (r->dead->__align == 1)
+	if ((current_time - last_meal) >= r->time_die)
 	{
-		safe_print_dead(current_time, DIE, r->philo_id + 1, r);
-		r->dead->__align = 0;
-		r->exit_status = 1;
+		sem_wait(r->diverse_updt);
+		if (r->dead->__align == 1)
+		{
+			safe_print_dead(current_time, DIE, r->philo_id + 1, r);
+			r->dead->__align = 0;
+			r->exit_status = 1;
+		}
 		sem_post(r->diverse_updt);
 		return (1);
 	}
-	sem_post(r->diverse_updt);
 	return (0);
 }
 
@@ -65,7 +68,6 @@ void	*monitor_death(void *arg)
 	t_simulation	*r;
 	long			current_time;
 	long			last_meal;
-	int				exit_status;
 
 	r = (t_simulation *)arg;
 	while (1)
@@ -73,16 +75,15 @@ void	*monitor_death(void *arg)
 		current_time = get_time();
 		sem_wait(r->diverse_updt);
 		last_meal = r->last_meal;
-		exit_status = r->exit_status;
-		sem_post(r->diverse_updt);
-		if ((current_time - last_meal) >= r->time_die)
+		if (r->exit_status == 2 || r->dead->__align != 1)
 		{
-			if (check_death(r, current_time))
-				break ;
-		}
-		if (exit_status == 2)
+			sem_post(r->diverse_updt);
 			break ;
-		usleep(50);
+		}
+		sem_post(r->diverse_updt);
+		if (check_death_condition(r, current_time, last_meal))
+			break ;
+		usleep(500);
 	}
 	return (NULL);
 }

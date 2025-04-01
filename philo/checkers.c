@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 21:45:43 by throbert          #+#    #+#             */
-/*   Updated: 2025/04/01 01:21:32 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 06:07:44 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	check_if_philo_died(t_simulation *r, int *i, t_philosopher *p)
 		}
 		pthread_mutex_unlock(&r->meal_check);
 		(*i)++;
-		usleep(50);
+		usleep(500);
 	}
 }
 
@@ -87,6 +87,6 @@ void	death__meal_checker(t_simulation *r, int *i, t_philosopher *p)
 			r->all_ate = 1;
 			pthread_mutex_unlock(&r->finish_mutex);
 		}
-		usleep(50);
+		usleep(500);
 	}
 }

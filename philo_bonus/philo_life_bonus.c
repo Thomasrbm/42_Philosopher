@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 23:10:48 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/29 00:48:54 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 06:07:38 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,17 +50,6 @@ static void	take_forks(int id, t_simulation *r)
 	safe_print(get_time() - r->start_time, FORK, id + 1, r);
 }
 
-static void	init_philo_life(int id, t_simulation *r, pthread_t *death_thread)
-{
-	if (r->nb_philo == 1)
-		single_life(id, r);
-	r->philo_id = id;
-	sem_wait(r->diverse_updt);
-	r->last_meal = get_time();
-	sem_post(r->diverse_updt);
-	pthread_create(death_thread, NULL, monitor_death, r);
-}
-
 void	philo_life(int id, t_simulation *r)
 {
 	pthread_t	death_thread;
@@ -80,7 +69,7 @@ void	philo_life(int id, t_simulation *r)
 		if (r->exit_status == 2)
 			break ;
 		philo_sleep_think(r, id);
-		usleep(50);
+		usleep(500);
 	}
 	pthread_join(death_thread, NULL);
 	free(r->pids);

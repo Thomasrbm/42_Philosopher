@@ -6,7 +6,7 @@
 /*   By: throbert <throbert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 05:12:43 by throbert          #+#    #+#             */
-/*   Updated: 2025/03/29 00:37:13 by throbert         ###   ########.fr       */
+/*   Updated: 2025/04/01 10:42:44 by throbert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,13 @@ void	better_sleep(long milliseconds, t_simulation *r)
 	start = get_time();
 	while (get_time() - start < milliseconds)
 	{
+		usleep(500);
+		sem_wait(r->diverse_updt);
 		if (r->dead->__align == 0)
+		{
+			sem_post(r->diverse_updt);
 			break ;
-		usleep(1);
+		}
+		sem_post(r->diverse_updt);
 	}
 }
